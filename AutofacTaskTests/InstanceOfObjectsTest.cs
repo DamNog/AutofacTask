@@ -3,6 +3,7 @@ using AutofacTask;
 using Contract.Infrastructures;
 using Contract.Managers;
 using Contract.Repositories;
+using Contract.Services;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
@@ -134,6 +135,40 @@ namespace AutofacTaskTests
       // Assert
       Assert.IsTrue(clientRepository != null);
       Assert.AreEqual(clientRepository.GetType().Name, "ActiveClientRepository");
+    }
+
+    [Test]
+    public void DevUserService_ShouldBeNotNull()
+    {
+      // Arrange
+      IUserService userService;
+
+      // Act
+      userService = this.container.Resolve<IUserService>();
+
+      // Assert
+      Assert.IsTrue(userService != null);
+      Assert.AreEqual(userService.GetType().Name, "DevUserService");
+    }
+
+    [Test]
+    public void ProdUserService_ShouldBeNotNull()
+    {
+      // Arrange
+      IUserService userService;
+      IConfiguration configuration;
+
+      // Act
+      configuration = this.container.Resolve<IConfiguration>();
+      configuration.IsProductionMode = true;
+
+      userService = this.container.Resolve<IUserService>();
+
+      configuration.IsProductionMode = false;
+
+      // Assert
+      Assert.IsTrue(userService != null);
+      Assert.AreEqual(userService.GetType().Name, "ProdUserService");
     }
 
   }
